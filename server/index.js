@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import { api } from "./api/api.js";
 
@@ -8,11 +9,13 @@ const PORT = 3001;
 const app = express();
 
 const corsOptions = {
-  origin: '*',
+  origin: ['http://localhost:3000'],
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
 app.use(helmet());
+api.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

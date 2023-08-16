@@ -1,8 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import style from "./Auth.module.css";
-import { useState } from "react";
+import { useContext,useState } from "react";
+import { UserContext } from "../context/UserContext";
 
 export function Login() {
+  const ctx = useContext(UserContext);
+
   const navigate = useNavigate();
   const [formErr, setFormErr] = useState('');
   const [email, setEmail] = useState("");
@@ -31,7 +34,7 @@ export function Login() {
   }
 
   function handleSubmit(e) {
-    e.preventDefault()
+    e.preventDefault();
 
     fetch("http://localhost:3001/api/login", {
       method: "POST",
@@ -50,6 +53,7 @@ export function Login() {
           setFormErr(data.msg)
         }
         if (data.status === "ok") {
+          ctx.loginUser();
           navigate("/dashboard")
         }
       })
