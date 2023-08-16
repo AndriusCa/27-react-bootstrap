@@ -1,8 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import style from "./Auth.module.css";
 import { useState } from "react";
 
 export function Login() {
+  const navigate = useNavigate();
+  const [formErr, setFormErr] = useState('');
   const [email, setEmail] = useState("");
   const [emailErr, setEmailErr] = useState("");
   const [pass, setPass] = useState("");
@@ -29,28 +31,51 @@ export function Login() {
   }
 
   function handleSubmit(e) {
-    e.preventDefault();
+    e.preventDefault()
 
     fetch("http://localhost:3001/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Accept: "application/json",
+        "Accept": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({
         email,
         password: pass,
       }),
-    })
-      .then((res) => res.json())
-      .then(console.log)
-      .catch((err) => console.error(err));
+    }).then((res) => res.json())
+      .then((data) => {
+        if (data.status === "err") {
+          setFormErr(data.msg)
+        }
+        if (data.status === "ok") {
+          navigate("/dashboard")
+        }
+      })
+      .catch((err) => console.error(err))
   }
 
   return (
     <div className={`form-signin w-100 m-auto ${style.formSignin}`}>
       <form onSubmit={handleSubmit}>
         <h1 className="h1 mb-3 fw-normal">Please sign in</h1>
+
+        {formErr && (
+          <div
+            className="alert alert-danger alert-dismissible fade show"
+            role="alert"
+          >
+            {formErr}
+            <button
+              onClick={() => setFormErr('')}
+              type="button"
+              className="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+        )}
 
         <div className="form-floating mb-3">
           <input
@@ -97,5 +122,5 @@ export function Login() {
         </Link>
       </form>
     </div>
-  );
+  )
 }

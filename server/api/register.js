@@ -38,7 +38,7 @@ register.post("/", async (req, res) => {
   }
 
   try {
-    const selectQuery = `SELECT * FROM users WHERE email = ?`;
+    const selectQuery = `SELECT * FROM users1 WHERE email = ?`;
     const [selectRes] = await connection.execute(selectQuery, [email]);
 
     if (selectRes.length > 0) {
@@ -53,7 +53,7 @@ register.post("/", async (req, res) => {
       });
     }
 
-    const insertQuery = `INSERT INTO users 
+    const insertQuery = `INSERT INTO users1 
                             (username, email, password)
                         VALUES 
                             (?, ?, ?);`
@@ -77,6 +77,6 @@ register.post("/", async (req, res) => {
       .status(500)
       .json({ status: "err", msg: "POST: REGISTER API - server error." });
   }
-})
+});
 
 export { register };
